@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Profile & Settings – Organization Details (Green Theme)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    html,body{ height:100%; }
+    body{ font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans"; }
+
+    /* Moving green gradient background */
+    .gradient-bg {
+      background: linear-gradient(-45deg, #10b981, #059669, #047857, #065f46, #064e3b, #022c22);
+      background-size: 400% 400%;
+      animation: gradientShift 10s ease-in-out infinite;
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      25% { background-position: 100% 50%; }
+      50% { background-position: 100% 100%; }
+      75% { background-position: 0% 100%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Twinkling stars for depth */
+    @keyframes twinkle { 0%,100%{opacity:.2; transform:translateY(0)} 50%{opacity:.7; transform:translateY(-3px)} }
+    .star{ position:absolute; background:radial-gradient(circle,rgba(255,255,255,.9) 0%, rgba(255,255,255,0) 70%); width:4px; height:4px; border-radius:999px; opacity:.4; animation: twinkle 3.5s ease-in-out infinite; }
+
+    /* Card hover lift */
+    .lift { transition: transform .2s ease, box-shadow .2s ease; }
+    .lift:hover { transform: translateY(-2px); box-shadow: 0 18px 40px -22px rgba(0,0,0,.6); }
+
+    /* Section headings */
+    .section-title { letter-spacing: -0.02em; }
+
+    /* Toggle styling helper */
+    .tgl:checked + .track { background-color: rgb(16 185 129); }
+    .tgl:checked + .track .thumb { transform: translateX(1.25rem); background-color: white; }
+
+    /* Toast */
+    .toast { animation: fadeSlide .4s ease forwards; opacity:0; transform: translateY(6px); }
+    @keyframes fadeSlide { to { opacity:1; transform: translateY(0);} }
+  </style>
+</head>
+<body class="gradient-bg text-white">
+  <div class="min-h-screen flex flex-col relative">
+    <!-- Stars layer -->
+    <div aria-hidden="true" class="pointer-events-none absolute inset-0">
+      <div id="bgStars" class="absolute inset-0"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="w-full">
+      <div class="max-w-6xl mx-auto px-6 pt-6 pb-2">
+        <div class="flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="h-10 w-10 rounded-xl bg-emerald-400/20 grid place-items-center ring-1 ring-emerald-300/30">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" class="text-emerald-300">
+                <path d="M4 14c0-5 4-9 9-9h7v7c0 5-4 9-9 9S4 19 4 14z" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M10 20c0-4 3-7 7-7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <div>
+              <p class="text-lg font-semibold">Profile & Settings</p>
+              <p class="text-sm text-emerald-100/80">Organization Details</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="saveStatus" class="px-3 py-1.5 rounded-full text-sm bg-white/10 ring-1 ring-white/10 text-emerald-50">All changes saved</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main -->
+    <main class="flex-1">
+      <div class="max-w-6xl mx-auto px-6 pb-16 pt-4">
+        <!-- Intro note -->
+        <div class="rounded-2xl bg-white/5 ring-1 ring-white/10 p-5 lift">
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+            <div>
+              <h1 class="section-title text-2xl sm:text-3xl font-extrabold">Organization Profile</h1>
+              <p class="mt-1 text-emerald-100/85">Keep your information up to date. Changes are stored in your browser for this demo.</p>
+            </div>
+            <div class="text-xs text-emerald-100/70">
+              Demo only — no data is sent anywhere
+            </div>
+          </div>
+        </div>
+
+        <!-- Grid layout -->
+        <div class="grid lg:grid-cols-3 gap-6 mt-6">
+          <!-- Left column -->
+          <div class="lg:col-span-2 space-y-6">
+            <!-- Organization Info -->
+            <section class="rounded-2xl bg-white/5 ring-1 ring-white/10 p-5 lift">
+              <div class="flex items-center justify-between">
+                <h2 class="section-title text-xl font-bold">Organization info</h2>
+                <button id="saveOrgBtn" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white">Save</button>
+              </div>
+              <div class="mt-4 grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm text-emerald-100/85">Organization name</label>
+                  <input id="orgName" type="text" placeholder="Green Harvest Trust" class="mt-1 w-full rounded-xl bg-white/10 focus:bg-white/15 outline-none ring-1 ring-white/10 focus:ring-white/20 px-4 py-2">
+                </div>
+                <div>
+                  <label class="block text-sm text-emerald-100/85">Contact person</label>
+                  <input id="contactPerson" type="text" placeholder="Aarav Singh" class="mt-1 w-full rounded-xl bg-white/10 focus:bg-white/15 outline-none ring-1 ring-white/10 focus:ring-white/20 px-4 py-2">
+                </div>
+                <div>
+                  <label class="block text-sm text-emerald-100/85">Phone</label>
+                  <input id="phone" type="tel" placeholder="+91 98765 43210" class="mt-1 w-full rounded-xl bg-white/10 focus:bg-white/15 outline-none ring-1 ring-white/10 focus:ring-white/20 px-4 py-2">
+                </div>
+                <div>
+                  <label class="block text-sm text-emerald-100/85">Email</label>
+                  <input id="email" type="email" placeholder="hello@greenharvest.org" class="mt-1 w-full rounded-xl bg-white/10 focus:bg-white/15 outline-none ring-1 ring-white/10 focus:ring-white/20 px-4 py-2">
+                </div>
+                <div class="sm:col-span-2">
+                  <label class="block text-sm text-emerald-100/85">Address</label>
+                  <textarea id="address" rows="3" placeholder="Street, City, State, ZIP" class="mt-1 w-full rounded-xl bg-white/10 focus:bg-white/15 outline-none ring-1 ring-white/10 focus:ring-white/20 px-4 py-2"></textarea>
+                </div>
+              </div>
+            </section>
+
+            <!-- Preferences -->
+            <section class="rounded-2xl bg-white/5 ring-1 ring-white/10 p-5 lift">
+              <div class="flex items-center justify-between">
+                <!-- <h2 class="section-title text-xl font-bold">Preferences</h2>
+                <button id="savePrefBtn" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white">Save</button>
+              </div> -->
+              <!-- <div class="mt-4 grid sm:grid-cols-2 gap-4"> -->
+                <!-- <div>
+                <label class="block text-sm text-emerald-100/85">Default pickup time</label>
+                <select id="pickupTime" class="mt-1 w-full rounded-xl bg-slate-800 text-white focus:bg-slate-700 outline-none ring-1 ring-white/10 focus:ring-emerald-400/50 px-4 py-2" placeholder="Select pickup time">
+                    <option value="" disabled selected class="bg-slate-800 text-white">Select pickup time...</option>
+                    <option value="09:00-11:00" class="bg-slate-800 text-white">09:00  11:00</option>
+                    <option value="11:00-13:00" class="bg-slate-800 text-white">11:00  13:00</option>
+                    <option value="13:00-15:00" class="bg-slate-800 text-white">13:00  15:00</option>
+                    <option value="15:00-17:00" class="bg-slate-800 text-white">15:00  17:00</option>
+                    <option value="17:00-19:00" class="bg-slate-800 text-white">17:00  19:00</option>
+                </select>
+                </div> -->
+                <!-- <div>
+                  <label class="block text-sm text-emerald-100/85">Packaging type</label>
+                  <select id="packaging" class="mt-1 w-full rounded-xl bg-slate-800 text-white focus:bg-slate-700 outline-none ring-1 ring-white/10 focus:ring-emerald-400/50 px-4 py-2">
+                    <option value="" disabled selected class="bg-slate-800 text-white">Select packaging type...</option>
+                    <option value="Reusable crates" class="bg-slate-800 text-white">Reusable crates</option>
+                    <option value="Compostable boxes" class="bg-slate-800 text-white">Compostable boxes</option>
+                    <option value="Standard boxes" class="bg-slate-800 text-white">Standard boxes</option>
+                    <option value="Mixed" class="bg-slate-800 text-white">Mixed</option>
+                  </select>
+                </div> -->
+                <div class="sm:col-span-2">
+                  <label class="block text-sm text-emerald-100/85">Languages</label>
+                  <div id="langChips" class="mt-2 flex flex-wrap gap-2">
+                    <!-- Chips rendered here -->
+                  </div>
+                  <div class="mt-2 flex gap-2">
+                    <select id="langSelect" class="flex-1 rounded-xl bg-slate-800 text-white focus:bg-slate-700 outline-none ring-1 ring-white/10 focus:ring-emerald-400/50 px-4 py-2">
+                      <option value="" class="bg-slate-800 text-white">Select a language...</option>
+                      <option value="English" class="bg-slate-800 text-white">English</option>
+                      <option value="Hindi" class="bg-slate-800 text-white">Hindi</option>
+                      <option value="Bengali" class="bg-slate-800 text-white">Bengali</option>
+                      <option value="Telugu" class="bg-slate-800 text-white">Telugu</option>
+                      <option value="Marathi" class="bg-slate-800 text-white">Marathi</option>
+                      <option value="Tamil" class="bg-slate-800 text-white">Tamil</option>
+                      <option value="Gujarati" class="bg-slate-800 text-white">Gujarati</option>
+                      <option value="Urdu" class="bg-slate-800 text-white">Urdu</option>
+                      <option value="Kannada" class="bg-slate-800 text-white">Kannada</option>
+                      <option value="Malayalam" class="bg-slate-800 text-white">Malayalam</option>
+                      <option value="Punjabi" class="bg-slate-800 text-white">Punjabi</option>
+                      <option value="Odia" class="bg-slate-800 text-white">Odia</option>
+                    </select>
+                    <button id="addLangBtn" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white">Add</button>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Account Settings -->
+            <section class="rounded-2xl bg-white/5 ring-1 ring-white/10 p-5 lift">
+              <div class="flex items-center justify-between">
+                <h2 class="section-title text-xl font-bold">Account settings</h2>
+                <button id="saveNotifBtn" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white">Save</button>
+              </div>
+
+              <div class="mt-4 grid gap-4">
+                <!-- Password: demo reset only -->
+                <div class="rounded-xl bg-white/5 ring-1 ring-white/10 p-4">
+                  <div class="flex items-center justify-between gap-3">
+                    <div>
+                      <p class="font-semibold">Password</p>
+                      <p class="text-sm text-emerald-100/75">For safety, this demo does not collect passwords.</p>
+                    </div>
+                    <button id="resetPwdBtn" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 ring-1 ring-white/10 text-white">Send password reset (Demo)</button>
+                  </div>
+                </div>
+
+                <!-- Notifications -->
+                <div class="rounded-xl bg-white/5 ring-1 ring-white/10 p-4">
+                  <p class="font-semibold">Notifications</p>
+                  <p class="text-sm text-emerald-100/75">Choose how you want to be notified.</p>
+                  <div class="mt-3 space-y-3">
+                    <label class="flex items-center justify-between gap-3">
+                      <span>Email updates</span>
+                      <input id="notifEmail" type="checkbox" class="tgl hidden">
+                      <span class="track w-12 h-7 bg-white/10 ring-1 ring-white/10 rounded-full relative cursor-pointer transition">
+                        <span class="thumb absolute top-1 left-1 w-5 h-5 rounded-full bg-white/70 transition"></span>
+                      </span>
+                    </label>
+                    <label class="flex items-center justify-between gap-3">
+                      <span>SMS alerts</span>
+                      <input id="notifSMS" type="checkbox" class="tgl hidden">
+                      <span class="track w-12 h-7 bg-white/10 ring-1 ring-white/10 rounded-full relative cursor-pointer transition">
+                        <span class="thumb absolute top-1 left-1 w-5 h-5 rounded-full bg-white/70 transition"></span>
+                      </span>
+                    </label>
+                    <!-- <label class="flex items-center justify-between gap-3">
+                      <span>Push notifications</span>
+                      <input id="notifPush" type="checkbox" class="tgl hidden">
+                      <span class="track w-12 h-7 bg-white/10 ring-1 ring-white/10 rounded-full relative cursor-pointer transition">
+                        <span class="thumb absolute top-1 left-1 w-5 h-5 rounded-full bg-white/70 transition"></span>
+                      </span>
+                    </label> -->
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- Right column -->
+          <div class="space-y-6">
+            <!-- Verification -->
+            <section class="rounded-2xl bg-white/5 ring-1 ring-white/10 p-5 lift">
+              <div class="flex items-center justify-between">
+                <h2 class="section-title text-xl font-bold">Verification</h2>
+                <span id="verifyBadge" class="px-3 py-1 rounded-full text-xs bg-amber-400/20 text-amber-200 ring-1 ring-amber-300/30">Unverified</span>
+              </div>
+              <p class="mt-3 text-emerald-100/80">
+                This demo does not collect government IDs (e.g., FSSAI numbers). Please share such details securely on your backend.
+              </p>
+
+              <div class="mt-4">
+                <label class="block text-sm text-emerald-100/85">Upload document (Demo)</label>
+                <input id="verifyFile" type="file" accept=".pdf,.jpg,.jpeg,.png" class="mt-1 w-full rounded-xl bg-white/10 file:mr-3 file:px-3 file:py-2 file:rounded-lg file:border-0 file:bg-emerald-500 file:text-white hover:file:bg-emerald-600 transition outline-none ring-1 ring-white/10 focus:ring-white/20 px-2 py-2">
+                <p id="fileNote" class="mt-2 text-xs text-emerald-100/70">No files are uploaded in this demo. The file name is shown for preview only.</p>
+                <div id="filePreview" class="mt-2 text-sm text-emerald-50"></div>
+              </div>
+
+              <div class="mt-4 flex items-center gap-2">
+                <button id="markVerifiedBtn" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white">Mark as verified (Demo)</button>
+                <button id="verifyHelpBtn" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/15 ring-1 ring-white/10">Learn how verification works</button>
+              </div>
+            </section>
+
+            <!-- Quick tips -->
+            <section class="rounded-2xl bg-white/5 ring-1 ring-white/10 p-5 lift">
+              <h3 class="section-title text-lg font-semibold">Tips</h3>
+              <ul class="mt-3 space-y-2 text-emerald-100/85 text-sm">
+                <li>Keep contact details current for scheduling pickups.</li>
+                <li>Pick a consistent pickup time to reduce missed handoffs.</li>
+                <li>Use reusable or compostable packaging when possible.</li>
+              </ul>
+            </section>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Toasts -->
+    <div id="toastWrap" class="fixed bottom-5 right-5 z-50 space-y-2"></div>
+
+    <!-- Modal -->
+    <div id="modalBackdrop" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-40"></div>
+    <div id="modal" class="fixed inset-x-4 sm:inset-x-0 sm:left-1/2 sm:-translate-x-1/2 top-24 sm:top-28 max-w-lg mx-auto rounded-2xl bg-slate-900 text-white ring-1 ring-white/10 p-5 hidden z-50">
+      <div class="flex items-start justify-between gap-4">
+        <div>
+          <h3 id="modalTitle" class="text-xl font-bold">Title</h3>
+          <p id="modalBody" class="mt-2 text-emerald-100/85">Body</p>
+        </div>
+        <button id="closeModal" class="shrink-0 h-10 w-10 rounded-xl bg-white/10 hover:bg-white/15 ring-1 ring-white/10 grid place-items-center transition">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="mt-4 flex items-center justify-end gap-3">
+        <button id="modalPrimary" class="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 transition text-white">Got it</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Stars
+    const bgStars = document.getElementById('bgStars');
+    (function spawnStars(){
+      const count = 40;
+      for (let i=0;i<count;i++){
+        const s = document.createElement('div');
+        s.className = 'star';
+        s.style.left = Math.random()*100 + '%';
+        s.style.top = Math.random()*100 + '%';
+        const size = 2 + Math.random()*3;
+        s.style.width = size + 'px';
+        s.style.height = size + 'px';
+        s.style.animationDuration = (2.8 + Math.random()*2.2) + 's';
+        s.style.animationDelay = (Math.random()*2) + 's';
+        bgStars.appendChild(s);
+      }
+    })();
+
+    // Elements
+    const saveStatus = document.getElementById('saveStatus');
+    const saveOrgBtn = document.getElementById('saveOrgBtn');
+    const savePrefBtn = document.getElementById('savePrefBtn');
+    const saveNotifBtn = document.getElementById('saveNotifBtn');
+
+    const orgName = document.getElementById('orgName');
+    const contactPerson = document.getElementById('contactPerson');
+    const phone = document.getElementById('phone');
+    const email = document.getElementById('email');
+    const address = document.getElementById('address');
+
+    const pickupTime = document.getElementById('pickupTime');
+    const packaging = document.getElementById('packaging');
+
+    const langChips = document.getElementById('langChips');
+    const langSelect = document.getElementById('langSelect');
+    const addLangBtn = document.getElementById('addLangBtn');
+
+    const notifEmail = document.getElementById('notifEmail');
+    const notifSMS = document.getElementById('notifSMS');
+    const notifPush = document.getElementById('notifPush');
+
+    const verifyFile = document.getElementById('verifyFile');
+    const filePreview = document.getElementById('filePreview');
+    const fileNote = document.getElementById('fileNote');
+    const markVerifiedBtn = document.getElementById('markVerifiedBtn');
+    const verifyBadge = document.getElementById('verifyBadge');
+    const verifyHelpBtn = document.getElementById('verifyHelpBtn');
+
+    const modal = document.getElementById('modal');
+    const modalBackdrop = document.getElementById('modalBackdrop');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    const modalPrimary = document.getElementById('modalPrimary');
+    const closeModal = document.getElementById('closeModal');
+
+    const resetPwdBtn = document.getElementById('resetPwdBtn');
+    const toastWrap = document.getElementById('toastWrap');
+
+    // Local storage helpers
+    const KEY = 'fw_profile_settings';
+    function loadData(){
+      try {
+        return JSON.parse(localStorage.getItem(KEY)) || {};
+      } catch(e){ return {}; }
+    }
+    function saveData(data){
+      localStorage.setItem(KEY, JSON.stringify(data));
+      saveStatus.textContent = 'All changes saved';
+      setTimeout(()=> saveStatus.textContent='All changes saved', 500);
+    }
+    function showToast(msg){
+      const t = document.createElement('div');
+      t.className = 'toast px-4 py-2 rounded-xl bg-emerald-600 text-white ring-1 ring-emerald-300/30 shadow-lg';
+      t.textContent = msg;
+      toastWrap.appendChild(t);
+      setTimeout(()=> { t.style.opacity='0'; t.style.transform='translateY(6px)'; setTimeout(()=>t.remove(),250); }, 1800);
+    }
+    function openModal(title, body){
+      modalTitle.textContent = title;
+      modalBody.textContent = body;
+      modal.classList.remove('hidden');
+      modalBackdrop.classList.remove('hidden');
+    }
+    function closeModalFn(){
+      modal.classList.add('hidden');
+      modalBackdrop.classList.add('hidden');
+    }
+    modalPrimary.addEventListener('click', closeModalFn);
+    closeModal.addEventListener('click', closeModalFn);
+    modalBackdrop.addEventListener('click', closeModalFn);
+
+    // Languages chips
+    let languages = [];
+    function renderLangs(){
+      langChips.innerHTML = '';
+      languages.forEach((lang, idx)=>{
+        const chip = document.createElement('button');
+        chip.className = 'px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/15 ring-1 ring-white/10 text-sm flex items-center gap-2';
+        chip.innerHTML = <span>${lang}</span><span class="text-emerald-200/80">✕</span>;
+        chip.addEventListener('click', ()=>{
+          languages.splice(idx,1);
+          renderLangs();
+        });
+        langChips.appendChild(chip);
+      });
+    }
+    addLangBtn.addEventListener('click', ()=>{
+      const v = langSelect.value;
+      if(!v) return;
+      if(!languages.includes(v)) languages.push(v);
+      langSelect.value = '';
+      renderLangs();
+    });
+
+    // Verification demo
+    verifyFile.addEventListener('change', ()=>{
+      const file = verifyFile.files[0];
+      filePreview.textContent = file ? Selected: ${file.name} : '';
+      if(file) showToast('Document added');
+    });
+    markVerifiedBtn.addEventListener('click', ()=>{
+      verifyBadge.textContent = 'Verified';
+      verifyBadge.className = 'px-3 py-1 rounded-full text-xs bg-emerald-400/20 text-emerald-200 ring-1 ring-emerald-300/30';
+      showToast('Marked as verified (Demo)');
+    });
+    verifyHelpBtn.addEventListener('click', ()=>{
+      openModal('Verification guidance', 'Submit and validate government registration details securely on your backend. This demo does not collect government IDs such as FSSAI numbers.');
+    });
+
+    // Password reset demo (no password fields)
+    resetPwdBtn.addEventListener('click', ()=>{
+      openModal('Password reset (Demo)', 'A reset link would be emailed to the account owner in a real app. This is a safe demo and does not send emails.');
+    });
+
+    // Save handlers
+    saveOrgBtn.addEventListener('click', ()=>{
+      const data = loadData();
+      data.org = {
+        orgName: orgName.value,
+        contactPerson: contactPerson.value,
+        phone: phone.value,
+        email: email.value,
+        address: address.value
+      };
+      saveData(data);
+      showToast('Organization info saved');
+    });
+
+    savePrefBtn.addEventListener('click', ()=>{
+      const data = loadData();
+      data.pref = {
+        pickupTime: pickupTime.value,
+        packaging: packaging.value,
+        languages
+      };
+      saveData(data);
+      showToast('Preferences saved');
+    });
+
+    saveNotifBtn.addEventListener('click', ()=>{
+      const data = loadData();
+      data.notif = {
+        email: notifEmail.checked,
+        sms: notifSMS.checked,
+        push: notifPush.checked
+      };
+      saveData(data);
+      showToast('Notification settings saved');
+    });
+
+    // Load on start
+    (function init(){
+      const data = loadData();
+      if(data.org){
+        orgName.value = data.org.orgName || '';
+        contactPerson.value = data.org.contactPerson || '';
+        phone.value = data.org.phone || '';
+        email.value = data.org.email || '';
+        address.value = data.org.address || '';
+      }
+      if(data.pref){
+        pickupTime.value = data.pref.pickupTime || '09:00-11:00';
+        packaging.value = data.pref.packaging || 'Reusable crates';
+        languages = Array.isArray(data.pref.languages) ? data.pref.languages : [];
+        renderLangs();
+      }
+      if(data.notif){
+        notifEmail.checked = !!data.notif.email;
+        notifSMS.checked = !!data.notif.sms;
+        notifPush.checked = !!data.notif.push;
+      }
+    })();
+  </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97305b0443593e0f',t:'MTc1NTg0NDU4My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

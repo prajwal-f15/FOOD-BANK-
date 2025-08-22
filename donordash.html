@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Food Waste Reducer – Donor Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: Inter, system-ui, sans-serif;
+      background: linear-gradient(135deg, #e6f9f0, #ffffff);
+      color: #064e3b;
+    }
+    .card {
+      background: #ffffff;
+      border-radius: 1rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .btn {
+      background: #10b981;
+      color: white;
+      border-radius: 0.75rem;
+      padding: 0.75rem 1.25rem;
+      transition: 0.3s;
+    }
+    .btn:hover { background: #059669; }
+    .nav-active { background: #10b981; color: white; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Navbar -->
+ <nav class="bg-emerald-600 text-white shadow-md">
+    <div class="max-w-7xl mx-auto flex justify-between items-center px-4 py-3">
+      <h1 class="text-lg font-bold">🌱 Donor Dashboard</h1>
+      <div class="space-x-2 text-sm md:text-base">
+        <a href="overview.html" class="px-3 py-2 rounded hover:bg-emerald-700">Overview</a>
+        <a href="post.html" class="px-3 py-2 rounded hover:bg-emerald-700">Post Surplus</a>
+        <a href="monitoring.html" class="px-3 py-2 rounded hover:bg-emerald-700">Monitoring</a>
+        <a href="donhistory.html" class="px-3 py-2 rounded hover:bg-emerald-700">History</a>
+        <a href="profile.html" class="px-3 py-2 rounded hover:bg-emerald-700">Profile</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-7xl mx-auto w-full p-4 space-y-6">
+
+    <!-- Overview -->
+    <section id="overview" class="hidden">
+      <h2 class="text-2xl font-bold mb-4">📊 Impact Overview</h2>
+      <div class="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+        <div class="card p-6 text-center">
+          <h3 class="text-lg font-semibold">Total Donations</h3>
+          <p class="text-3xl font-bold text-emerald-600" id="stat-total">0</p>
+        </div>
+        <div class="card p-6 text-center">
+          <h3 class="text-lg font-semibold">Meals Served</h3>
+          <p class="text-3xl font-bold text-emerald-600" id="stat-meals">0</p>
+        </div>
+        <div class="card p-6 text-center">
+          <h3 class="text-lg font-semibold">Carbon Saved (kg)</h3>
+          <p class="text-3xl font-bold text-emerald-600" id="stat-carbon">0</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Post Surplus -->
+    <section id="post" class="hidden">
+      <h2 class="text-2xl font-bold mb-4">🍲 Post Surplus Food</h2>
+      <div class="card p-6">
+        <form id="donationForm" class="space-y-4">
+          <input class="w-full border rounded-lg p-3" placeholder="Food Item (e.g., Bread)" id="foodItem" required />
+          <input class="w-full border rounded-lg p-3" placeholder="Quantity (e.g., 10 packs)" id="foodQty" required />
+          <input type="date" class="w-full border rounded-lg p-3" id="expiryDate" required />
+          <textarea class="w-full border rounded-lg p-3" placeholder="Pickup Address" id="pickupAddr" required></textarea>
+          <button class="btn w-full" type="submit">Post Donation</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Active Listings -->
+    <section id="active" class="hidden">
+      <h2 class="text-2xl font-bold mb-4">📦 Active Listings</h2>
+      <div id="activeList" class="grid gap-4 md:grid-cols-2"></div>
+      <p id="activeEmpty" class="text-sm text-emerald-800/70"></p>
+    </section>
+
+    <!-- History -->
+    <section id="history" class="hidden">
+      <h2 class="text-2xl font-bold mb-4">📜 Donation History</h2>
+      <div id="historyList" class="space-y-3"></div>
+      <p id="historyEmpty" class="text-sm text-emerald-800/70"></p>
+    </section>
+
+    <!-- Profile -->
+    <section id="profile" class="hidden">
+      <h2 class="text-2xl font-bold mb-4">👤 Profile & Settings</h2>
+      <div class="card p-6 space-y-4">
+        <input id="orgName" class="w-full border rounded-lg p-3" placeholder="Organization Name" />
+        <input id="fssaiNo" class="w-full border rounded-lg p-3" placeholder="FSSAI Number" />
+        <textarea id="preferences" class="w-full border rounded-lg p-3" placeholder="Donation Preferences"></textarea>
+        <button class="btn w-full" onclick="saveProfile()">Save Profile</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // --- State ---
+    let donations = JSON.parse(localStorage.getItem("donations") || "[]");
+    let profile = JSON.parse(localStorage.getItem("profile") || "{}");
+
+    const fmtDate = d => new Date(d).toLocaleDateString();
+
+    // --- Helpers ---
+    function el(tag, attrs = {}, children = []) {
+      const node = document.createElement(tag);
+      Object.entries(attrs).forEach(([k, v]) => node.setAttribute(k, v));
+      (Array.isArray(children) ? children : [children]).forEach(c => node.append(c));
+      return node;
+    }
+
+    function setText(id, text) {
+      const n = document.getElementById(id);
+      if (n) n.textContent = text;
+    }
+
+    // --- Rendering ---
+    function updateStats() {
+      const total = donations.length;
+      setText("stat-total", total);
+      setText("stat-meals", total * 25);
+      setText("stat-carbon", total * 3);
+    }
+
+    function renderActive() {
+      const cont = document.getElementById("activeList");
+      const empty = document.getElementById("activeEmpty");
+      cont.innerHTML = "";
+      const items = donations.filter(d => !d.collected);
+      empty.textContent = items.length ? "" : "No active listings yet. Post your first surplus in the 'Post Surplus' tab.";
+      items.forEach(item => {
+        cont.append(
+          el("div", { class: "card p-4" }, [
+            el("h3", { class: "text-lg font-semibold" }, [item.item]),
+            el("p", {}, [Qty: ${item.qty}]),
+            el("p", {}, [Best by: ${fmtDate(item.exp)}]),
+            el("p", {}, [Pickup: ${item.addr}]),
+            el("button", { class: "btn mt-3 w-full", onclick: () => markCollected(item.id) }, ["Mark as Collected"])
+          ])
+        );
+      });
+    }
+
+    function renderHistory() {
+      const cont = document.getElementById("historyList");
+      const empty = document.getElementById("historyEmpty");
+      cont.innerHTML = "";
+      const items = donations.filter(d => d.collected);
+      empty.textContent = items.length ? "" : "No donations in history yet.";
+      items.forEach(h => {
+        cont.append(
+          el("div", { class: "card p-4" }, [
+            el("p", {}, [${h.item} • Qty: ${h.qty} • Date: ${fmtDate(h.postedAt)}])
+          ])
+        );
+      });
+    }
+
+    // --- Handlers ---
+    document.getElementById("donationForm").onsubmit = e => {
+      e.preventDefault();
+      const item = document.getElementById("foodItem").value.trim();
+      const qty = document.getElementById("foodQty").value.trim();
+      const exp = document.getElementById("expiryDate").value;
+      const addr = document.getElementById("pickupAddr").value.trim();
+
+      if (!item || !qty || !exp || !addr) return;
+
+      donations.push({
+        id: Date.now(),
+        item, qty, exp, addr,
+        postedAt: new Date(),
+        collected: false
+      });
+      localStorage.setItem("donations", JSON.stringify(donations));
+      e.target.reset();
+      renderActive();
+      updateStats();
+      alert("✅ Donation posted!");
+    };
+
+    function markCollected(id) {
+      donations = donations.map(d => d.id === id ? { ...d, collected: true } : d);
+      localStorage.setItem("donations", JSON.stringify(donations));
+      renderActive();
+      renderHistory();
+      updateStats();
+    }
+
+    function saveProfile() {
+      profile = {
+        name: document.getElementById("orgName").value,
+        fssai: document.getElementById("fssaiNo").value,
+        prefs: document.getElementById("preferences").value
+      };
+      localStorage.setItem("profile", JSON.stringify(profile));
+      alert("✅ Profile saved!");
+    }
+
+    function loadProfile() {
+      if (profile.name) document.getElementById("orgName").value = profile.name;
+      if (profile.fssai) document.getElementById("fssaiNo").value = profile.fssai;
+      if (profile.prefs) document.getElementById("preferences").value = profile.prefs;
+    }
+
+    // --- Panels / Nav ---
+    function showPanel(id) {
+      // Panels
+      document.querySelectorAll("main section").forEach(s => s.classList.add("hidden"));
+      const target = document.getElementById(id);
+      if (target) target.classList.remove("hidden");
+
+      // Nav active state
+      document.querySelectorAll("nav button[data-panel]").forEach(btn => {
+        btn.classList.toggle("nav-active", btn.dataset.panel === id);
+      });
+    }
+
+    // --- Init ---
+    loadProfile();
+    updateStats();
+    renderActive();
+    renderHistory();
+    showPanel("overview");
+  </script>
+</body>
+</html>
