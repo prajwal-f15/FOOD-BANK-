@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login & Registration</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Animated gradient background */
+    .gradient-bg {
+      background: linear-gradient(-45deg, #10b981, #059669, #047857, #065f46, #064e3b, #022c22);
+      background-size: 400% 400%;
+      animation: gradientShift 10s ease-in-out infinite;
+    }
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      25% { background-position: 100% 50%; }
+      50% { background-position: 100% 100%; }
+      75% { background-position: 0% 100%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Card animation */
+    .card {
+      transition: transform 0.5s ease, opacity 0.5s ease;
+    }
+    .hidden-section {
+      display: none;
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    .active-section {
+      display: block;
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Cursor effect */
+    .cursor-glow {
+      position: fixed;
+      width: 25px;
+      height: 25px;
+      border-radius: 50%;
+      background: rgba(16,185,129,0.4);
+      pointer-events: none;
+      mix-blend-mode: screen;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s ease;
+    }
+
+    select option {
+  background: #064e3b; /* dark green from your gradient */
+  color: white;
+}
+
+/* Smooth animation for login/register sections */
+.form-section {
+  transition: all 0.6s ease;
+}
+
+/* Hidden state */
+.hidden-section {
+  opacity: 0;
+  transform: translateX(50px);
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+/* Active state */
+.active-section {
+  opacity: 1;
+  transform: translateX(0);
+  position: relative;
+  pointer-events: auto;
+}
+
+  </style>
+</head>
+<body class="gradient-bg flex items-center justify-center min-h-screen overflow-hidden relative">
+
+  <!-- Cursor Glow -->
+  <div class="cursor-glow" id="cursor"></div>
+
+  <!-- Container -->
+  <div class="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl w-[90%] max-w-md p-8 text-white relative card">
+    <!-- Login Section -->
+    <div id="loginSection" class="form-section active-section">
+      <h2 class="text-3xl font-bold mb-6 text-center">Login</h2>
+      <form class="space-y-4">
+        <input type="text" placeholder="Name" class="w-full px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 outline-none">
+        <input type="email" placeholder="Email" class="w-full px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 outline-none">
+        <input type="password" placeholder="Password" class="w-full px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 outline-none">
+        <button type="submit" class="w-full py-2 rounded-lg bg-green-500 hover:bg-green-600 transition transform hover:scale-105">Login</button>
+      </form>
+      <p class="mt-4 text-sm text-center">Don't have an account? <span class="text-green-300 cursor-pointer hover:underline" onclick="toggleForm('register')">Register</span></p>
+    </div>
+
+    <!-- Registration Section -->
+    <div id="registerSection" class="form-section hidden-section">
+      <h2 class="text-3xl font-bold mb-6 text-center">Register</h2>
+      <form class="space-y-4">
+        <input type="text" placeholder="Name" class="w-full px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 outline-none">
+        <input type="email" placeholder="Email" class="w-full px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 outline-none">
+        <input type="password" placeholder="Password" class="w-full px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 outline-none">
+        <select class="w-full px-4 py-2 rounded-lg bg-white/20 focus:bg-white/30 outline-none" required>
+          <option value="" disabled selected>Select role</option>
+          <option value="donor">Donor</option>
+          <option value="receiver">Receiver</option>
+          <option value="driver">Transport</option>
+        </select>
+        <button type="submit" class="w-full py-2 rounded-lg bg-green-500 hover:bg-green-600 transition transform hover:scale-105">Register</button>
+      </form>
+      <p class="mt-4 text-sm text-center">Already have an account? <span class="text-green-300 cursor-pointer hover:underline" onclick="toggleForm('login')">Login</span></p>
+    </div>
+  </div>
+
+  <script>
+    const loginSection = document.getElementById('loginSection');
+    const registerSection = document.getElementById('registerSection');
+    
+    function toggleForm(section) {
+      if (section === 'register') {
+        loginSection.classList.remove('active-section');
+        loginSection.classList.add('hidden-section');
+        registerSection.classList.remove('hidden-section');
+        registerSection.classList.add('active-section');
+      } else {
+        registerSection.classList.remove('active-section');
+        registerSection.classList.add('hidden-section');
+        loginSection.classList.remove('hidden-section');
+        loginSection.classList.add('active-section');
+      }
+    }
+
+    // Cursor Glow Effect
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', (e) => {
+      cursor.style.left = e.pageX + 'px';
+      cursor.style.top = e.pageY + 'px';
+    });
+
+    function toggleForm(section) {
+  if (section === 'register') {
+    loginSection.classList.remove('active-section');
+    loginSection.classList.add('hidden-section');
+    registerSection.classList.remove('hidden-section');
+    registerSection.classList.add('active-section');
+  } else {
+    registerSection.classList.remove('active-section');
+    registerSection.classList.add('hidden-section');
+    loginSection.classList.remove('hidden-section');
+    loginSection.classList.add('active-section');
+  }
+}
+
+  </script>
+
+</body>
+</html>

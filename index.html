@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Save2Serve - Save Food, Serve Communities</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+            cursor: none;
+        }
+
+        /* Custom Cursor */
+      /* ...existing code... */
+* {
+    font-family: 'Inter', sans-serif;
+    cursor: auto; /* Use default cursor */
+}
+/* ...existing code... */
+
+        /* Green Gradient Background */
+        .gradient-bg {
+            background: linear-gradient(-45deg, #10b981, #059669, #047857, #065f46, #064e3b, #022c22);
+            background-size: 400% 400%;
+            animation: gradientShift 10s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            25% { background-position: 100% 50%; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0% 100%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Logo Image Animation */
+        .logo-img {
+            animation: logoFloat 4s ease-in-out infinite;
+            filter: drop-shadow(0 10px 30px rgba(16, 185, 129, 0.4));
+            transition: all 0.3s ease;
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { 
+                transform: translateY(0px) rotate(0deg) scale(1);
+            }
+            50% { 
+                transform: translateY(-15px) rotate(2deg) scale(1.05);
+            }
+        }
+
+        .logo-img:hover {
+            transform: scale(1.1) rotate(5deg);
+            filter: drop-shadow(0 15px 40px rgba(16, 185, 129, 0.6));
+        }
+
+        /* Animated Logo Name */
+        .logo-name {
+            background: linear-gradient(45deg, #10b981, #059669, #047857, #065f46);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: textGradient 3s ease-in-out infinite;
+            position: relative;
+        }
+
+        @keyframes textGradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .logo-name::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #10b981, #059669);
+            animation: underlineGrow 2s ease-in-out infinite;
+        }
+
+        @keyframes underlineGrow {
+            0%, 100% { width: 0; }
+            50% { width: 100%; }
+        }
+
+        /* Tagline Animation */
+        .tagline {
+            animation: fadeInSlide 2s ease-out forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        @keyframes fadeInSlide {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Start Button */
+        .start-button {
+            background: linear-gradient(45deg, #10b981, #059669, #047857);
+            background-size: 200% 200%;
+            animation: buttonGradient 3s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.4);
+        }
+
+        @keyframes buttonGradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .start-button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 25px 50px rgba(16, 185, 129, 0.6);
+        }
+
+        .start-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .start-button:hover::before {
+            left: 100%;
+        }
+
+        /* Cards */
+        .hover-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(240, 253, 244, 0.9));
+            backdrop-filter: blur(10px);
+            transition: all 0.4s ease;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .hover-card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 25px 50px rgba(16, 185, 129, 0.2);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(240, 253, 244, 0.95));
+            border-color: rgba(16, 185, 129, 0.4);
+        }
+
+        /* About Section Animations */
+        .about-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(240, 253, 244, 0.8));
+            transition: all 0.4s ease;
+            border-left: 4px solid #10b981;
+        }
+
+        .about-card:hover {
+            transform: translateX(10px);
+            box-shadow: 0 15px 30px rgba(16, 185, 129, 0.15);
+            border-left-width: 8px;
+        }
+
+        /* Particles */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            font-size: 1.5rem;
+            animation: float 8s ease-in-out infinite;
+            opacity: 0.6;
+            color: rgba(16, 185, 129, 0.7);
+        }
+
+        @keyframes float {
+            0%, 100% { 
+                transform: translateY(0px) rotate(0deg) scale(1); 
+                opacity: 0.6;
+            }
+            33% { 
+                transform: translateY(-30px) rotate(120deg) scale(1.2); 
+                opacity: 0.8;
+            }
+            66% { 
+                transform: translateY(-15px) rotate(240deg) scale(0.8); 
+                opacity: 0.4;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .cursor, .cursor-follower {
+                display: none;
+            }
+            
+            * {
+                cursor: auto;
+            }
+            
+            .particle {
+                font-size: 1rem;
+            }
+        }
+
+        /* Fade In Animation */
+        .fade-in {
+            animation: fadeIn 1.5s ease-out forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Pulse Animation */
+        .pulse-ring {
+            position: absolute;
+            border: 3px solid rgba(16, 185, 129, 0.3);
+            border-radius: 50%;
+            animation: pulse 2s ease-out infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+
+        /* Section Divider */
+        .section-divider {
+            background: linear-gradient(90deg, transparent, #10b981, transparent);
+            height: 2px;
+            width: 100%;
+            animation: dividerGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes dividerGlow {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="overflow-x-hidden">
+    <!-- Custom Cursor -->
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-follower" id="cursor-follower"></div>
+
+    <!-- Navigation Bar -->
+    <nav class="fixed top-0 w-full bg-white/10 backdrop-blur-md z-50 border-b border-white/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo Section -->
+                <div class="flex items-center space-x-3">
+                    <img src="https://via.placeholder.com/40x40/10b981/ffffff?text=S2S" 
+                         alt="Save2Serve Logo" 
+                         class="w-8 h-8 md:w-10 md:h-10 rounded-full border-2 border-white/30"
+                         onerror="this.src=''; this.alt='Logo failed to load'; this.style.display='none';">
+                    <span class="text-lg md:text-xl font-bold text-white">Save2Serve</span>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex space-x-8">
+                    <a href="#home" class="text-white/90 hover:text-white transition-colors duration-300 font-medium">Home</a>
+                    <a href="#about" class="text-white/90 hover:text-white transition-colors duration-300 font-medium">About</a>
+                    <a href="#mission" class="text-white/90 hover:text-white transition-colors duration-300 font-medium">Mission</a>
+                    <a href="#impact" class="text-white/90 hover:text-white transition-colors duration-300 font-medium">Impact</a>
+                    <a href="#contact" class="text-white/90 hover:text-white transition-colors duration-300 font-medium">Contact</a>
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-white p-2 rounded-lg hover:bg-white/10 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="md:hidden hidden bg-white/10 backdrop-blur-md border-t border-white/20">
+                <div class="px-2 pt-2 pb-3 space-y-1">
+                    <a href="#home" class="block px-3 py-2 text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-colors">Home</a>
+                    <a href="#about" class="block px-3 py-2 text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-colors">About</a>
+                    <a href="#mission" class="block px-3 py-2 text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-colors">Mission</a>
+                    <a href="#impact" class="block px-3 py-2 text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-colors">Impact</a>
+                    <a href="#contact" class="block px-3 py-2 text-white/90 hover:text-white hover:bg-white/10 rounded-lg transition-colors">Contact</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Floating Particles -->
+    <div class="particles fixed inset-0 z-0" id="particles"></div>
+
+    <!-- Main Hero Section -->
+    <div id="home" class="gradient-bg min-h-screen flex flex-col items-center justify-center relative overflow-hidden px-4 pt-16">
+        
+        <!-- Logo Image -->
+        <div class="text-center mb-6 md:mb-8 fade-in" style="animation-delay: 0.2s;">
+            <img src="https://via.placeholder.com/150x150/10b981/ffffff?text=S2S" 
+                 alt="Save2Serve Logo" 
+                 class="logo-img w-24 h-24 md:w-32 md:h-32 lg:w-40 lg:h-40 mx-auto rounded-full border-4 border-white/20"
+                 onerror="this.src=''; this.alt='Logo failed to load'; this.style.display='none';">
+        </div>
+        
+        <!-- Animated Logo Name -->
+        <div class="text-center mb-4 md:mb-6 fade-in" style="animation-delay: 0.4s;">
+            <h1 class="logo-name text-4xl md:text-6xl lg:text-7xl font-black mb-2">
+                Save2Serve
+            </h1>
+        </div>
+        
+        <!-- Tagline -->
+        <div class="text-center mb-8 md:mb-12 tagline" style="animation-delay: 0.6s;">
+            <p class="text-lg md:text-xl lg:text-2xl text-white/90 font-medium">
+                Save Food, Serve Communities
+            </p>
+            <p class="text-sm md:text-base text-white/70 mt-2 max-w-2xl mx-auto">
+                Connecting surplus food with those in need through technology and community action
+            </p>
+        </div>
+        
+        <!-- Start Button -->
+        <div class="relative fade-in mb-12 md:mb-16" style="animation-delay: 0.8s;">
+            <!-- Pulse Rings -->
+            <div class="pulse-ring w-20 h-20 md:w-24 md:h-24"></div>
+            <div class="pulse-ring w-20 h-20 md:w-24 md:h-24" style="animation-delay: 0.5s;"></div>
+            <div class="pulse-ring w-20 h-20 md:w-24 md:h-24" style="animation-delay: 1s;"></div>
+            
+            <!-- Main Button -->
+            <a href="login.html" target="_blank" class="start-button inline-flex items-center justify-center w-20 h-20 md:w-24 md:h-24 rounded-full text-white font-bold text-lg md:text-xl relative z-10 group">
+                <span class="flex flex-col items-center">
+                    <svg class="w-6 h-6 md:w-8 md:h-8 mb-1 group-hover:scale-110 transition-transform duration-300" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="text-xs md:text-sm">START</span>
+                </span>
+            </a>
+        </div>
+        
+        <!-- Feature Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-6xl mx-auto fade-in" style="animation-delay: 1s;">
+            <div class="hover-card rounded-2xl p-6 md:p-8 text-center">
+                <div class="text-4xl md:text-5xl mb-4">🌱</div>
+                <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-3">Reduce Waste</h3>
+                <p class="text-gray-600 text-sm md:text-base">Divert surplus food from landfills to create environmental impact</p>
+            </div>
+            
+            <div class="hover-card rounded-2xl p-6 md:p-8 text-center">
+                <div class="text-4xl md:text-5xl mb-4">🤝</div>
+                <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-3">Feed Communities</h3>
+                <p class="text-gray-600 text-sm md:text-base">Connect food donors with organizations serving those in need</p>
+            </div>
+            
+            <div class="hover-card rounded-2xl p-6 md:p-8 text-center">
+                <div class="text-4xl md:text-5xl mb-4">💚</div>
+                <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-3">Build Bridges</h3>
+                <p class="text-gray-600 text-sm md:text-base">Create lasting partnerships between businesses and communities</p>
+            </div>
+        </div>
+        
+        <!-- Impact Stats -->
+        <div class="grid grid-cols-3 gap-4 md:gap-8 mt-12 md:mt-16 max-w-4xl mx-auto fade-in" style="animation-delay: 1.2s;">
+            <div class="text-center">
+                <div class="text-2xl md:text-4xl font-black text-white mb-2" id="meals-counter">0</div>
+                <p class="text-white/80 text-xs md:text-sm">Meals Saved</p>
+            </div>
+            <div class="text-center">
+                <div class="text-2xl md:text-4xl font-black text-white mb-2" id="food-counter">0</div>
+                <p class="text-white/80 text-xs md:text-sm">Tons Diverted</p>
+            </div>
+            <div class="text-center">
+                <div class="text-2xl md:text-4xl font-black text-white mb-2" id="co2-counter">0</div>
+                <p class="text-white/80 text-xs md:text-sm">CO₂ Reduced</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Divider -->
+    <div class="section-divider"></div>
+
+    <!-- Mission Section -->
+    <section id="mission" class="bg-gradient-to-br from-emerald-100 to-green-100 py-16 md:py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 md:mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold text-gray-800 mb-4 md:mb-6">
+                    Our <span class="text-green-600">Mission</span>
+                </h2>
+                <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                    We're dedicated to creating a world where no food goes to waste and no person goes hungry.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="hover-card rounded-2xl p-6 md:p-8 text-center">
+                    <div class="text-4xl md:text-5xl mb-4">🌍</div>
+                    <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-3">Environmental Impact</h3>
+                    <p class="text-gray-600">Reducing food waste to combat climate change and protect our planet</p>
+                </div>
+                
+                <div class="hover-card rounded-2xl p-6 md:p-8 text-center">
+                    <div class="text-4xl md:text-5xl mb-4">🍽️</div>
+                    <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-3">Food Security</h3>
+                    <p class="text-gray-600">Ensuring nutritious meals reach communities facing food insecurity</p>
+                </div>
+                
+                <div class="hover-card rounded-2xl p-6 md:p-8 text-center">
+                    <div class="text-4xl md:text-5xl mb-4">🤝</div>
+                    <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-3">Community Building</h3>
+                    <p class="text-gray-600">Strengthening bonds between businesses, volunteers, and communities</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Impact Section -->
+    <section id="impact" class="bg-white py-16 md:py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 md:mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold text-gray-800 mb-4 md:mb-6">
+                    Our <span class="text-green-600">Impact</span>
+                </h2>
+                <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                    Real numbers showing the difference we're making together.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="hover-card rounded-2xl p-8 text-center">
+                    <div class="text-4xl md:text-5xl font-black text-green-600 mb-4" id="impact-meals">0</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Meals Delivered</h3>
+                    <p class="text-gray-600">Nutritious meals provided to communities in need</p>
+                </div>
+                
+                <div class="hover-card rounded-2xl p-8 text-center">
+                    <div class="text-4xl md:text-5xl font-black text-green-600 mb-4" id="impact-food">0</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Tons Food Saved</h3>
+                    <p class="text-gray-600">Surplus food rescued from going to waste</p>
+                </div>
+                
+                <div class="hover-card rounded-2xl p-8 text-center">
+                    <div class="text-4xl md:text-5xl font-black text-green-600 mb-4" id="impact-co2">0</div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">CO₂ Prevented (kg)</h3>
+                    <p class="text-gray-600">Environmental impact reduced through our efforts</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="bg-gradient-to-br from-green-50 to-emerald-50 py-16 md:py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- About Header -->
+            <div class="text-center mb-12 md:mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold text-gray-800 mb-4 md:mb-6">
+                    About <span class="text-green-600">Save2Serve</span>
+                </h2>
+                <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                    We're on a mission to eliminate food waste while feeding communities in need. 
+                    Every meal saved is a step towards a more sustainable and caring world.
+                </p>
+            </div>
+
+            <!-- Mission Cards -->
+            <div class="grid md:grid-cols-2 gap-8 md:gap-12 mb-16">
+                <div class="about-card rounded-2xl p-6 md:p-8">
+                    <div class="flex items-start space-x-4">
+                        <div class="text-4xl md:text-5xl">🎯</div>
+                        <div>
+                            <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-3">Our Mission</h3>
+                            <p class="text-gray-600 leading-relaxed">
+                                To create a sustainable ecosystem where surplus food reaches those who need it most, 
+                                reducing waste and building stronger communities through innovative technology solutions.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="about-card rounded-2xl p-6 md:p-8">
+                    <div class="flex items-start space-x-4">
+                        <div class="text-4xl md:text-5xl">👁️</div>
+                        <div>
+                            <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-3">Our Vision</h3>
+                            <p class="text-gray-600 leading-relaxed">
+                                A world where no edible food goes to waste and no person goes hungry. 
+                                We envision communities connected through compassion and sustainable practices.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Values Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+                <div class="hover-card rounded-2xl p-6 text-center">
+                    <div class="text-3xl md:text-4xl mb-4">🌍</div>
+                    <h4 class="text-lg md:text-xl font-bold text-gray-800 mb-2">Sustainability</h4>
+                    <p class="text-gray-600 text-sm md:text-base">Environmental responsibility in every action</p>
+                </div>
+
+                <div class="hover-card rounded-2xl p-6 text-center">
+                    <div class="text-3xl md:text-4xl mb-4">🤲</div>
+                    <h4 class="text-lg md:text-xl font-bold text-gray-800 mb-2">Compassion</h4>
+                    <p class="text-gray-600 text-sm md:text-base">Caring for communities with empathy</p>
+                </div>
+
+                <div class="hover-card rounded-2xl p-6 text-center">
+                    <div class="text-3xl md:text-4xl mb-4">⚡</div>
+                    <h4 class="text-lg md:text-xl font-bold text-gray-800 mb-2">Innovation</h4>
+                    <p class="text-gray-600 text-sm md:text-base">Technology-driven solutions for impact</p>
+                </div>
+
+                <div class="hover-card rounded-2xl p-6 text-center">
+                    <div class="text-3xl md:text-4xl mb-4">🔗</div>
+                    <h4 class="text-lg md:text-xl font-bold text-gray-800 mb-2">Connection</h4>
+                    <p class="text-gray-600 text-sm md:text-base">Building bridges between communities</p>
+                </div>
+            </div>
+
+            <!-- Story Section -->
+            <div class="mt-16 md:mt-20">
+                <div class="about-card rounded-2xl p-8 md:p-12 text-center">
+                    <h3 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6">Our Story</h3>
+                    <p class="text-gray-600 text-lg leading-relaxed max-w-4xl mx-auto">
+                        Founded in 2024, Save2Serve emerged from a simple observation: while millions of people face food insecurity, 
+                        tons of perfectly good food are wasted daily. Our team of passionate technologists, community advocates, 
+                        and sustainability experts came together to bridge this gap through innovative solutions that benefit everyone involved.
+                    </p>
+                    <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                        <div>
+                            <div class="text-2xl md:text-3xl font-bold text-green-600 mb-2">500+</div>
+                            <p class="text-gray-600">Partner Organizations</p>
+                        </div>
+                        <div>
+                            <div class="text-2xl md:text-3xl font-bold text-green-600 mb-2">50+</div>
+                            <p class="text-gray-600">Cities Served</p>
+                        </div>
+                        <div>
+                            <div class="text-2xl md:text-3xl font-bold text-green-600 mb-2">1M+</div>
+                            <p class="text-gray-600">Lives Impacted</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="bg-gradient-to-br from-green-600 to-emerald-700 py-16 md:py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12 md:mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold text-white mb-4 md:mb-6">
+                    Get In <span class="text-green-200">Touch</span>
+                </h2>
+                <p class="text-lg md:text-xl text-white/90 max-w-3xl mx-auto leading-relaxed">
+                    Ready to make a difference? Join our mission to save food and serve communities.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12">
+                <!-- Contact Form -->
+                <div class="hover-card rounded-2xl p-8">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">Send us a Message</h3>
+                    <form id="contact-form" class="space-y-6">
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Full Name</label>
+                            <input type="text" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Email Address</label>
+                            <input type="email" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Subject</label>
+                            <select required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all">
+                                <option value="">Select a topic</option>
+                                <option value="partnership">Partnership Inquiry</option>
+                                <option value="volunteer">Volunteer Application</option>
+                                <option value="donation">Food Donation</option>
+                                <option value="support">Technical Support</option>
+                                <option value="general">General Question</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Message</label>
+                            <textarea required rows="4" class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all" placeholder="Tell us how we can help..."></textarea>
+                        </div>
+                        <button type="submit" class="start-button w-full py-4 rounded-lg text-white font-semibold text-lg">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Contact Information -->
+                <div class="space-y-8">
+                    <div class="hover-card rounded-2xl p-6">
+                        <div class="flex items-center space-x-4">
+                            <div class="text-3xl">📞</div>
+                            <div>
+                                <h4 class="text-xl font-bold text-gray-800 mb-2">Phone</h4>
+                                <p class="text-gray-600">+1 (555) SAVE-FOOD</p>
+                                <p class="text-gray-600">24/7 Support Available</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hover-card rounded-2xl p-6">
+                        <div class="flex items-center space-x-4">
+                            <div class="text-3xl">📧</div>
+                            <div>
+                                <h4 class="text-xl font-bold text-gray-800 mb-2">Email</h4>
+                                <p class="text-gray-600">hello@save2serve.org</p>
+                                <p class="text-gray-600">partnerships@save2serve.org</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hover-card rounded-2xl p-6">
+                        <div class="flex items-center space-x-4">
+                            <div class="text-3xl">📍</div>
+                            <div>
+                                <h4 class="text-xl font-bold text-gray-800 mb-2">Address</h4>
+                                <p class="text-gray-600">123 Community Street</p>
+                                <p class="text-gray-600">Green City, GC 12345</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hover-card rounded-2xl p-6">
+                        <h4 class="text-xl font-bold text-gray-800 mb-4">Follow Us</h4>
+                        <div class="flex space-x-4">
+                            <a href="#" class="w-12 h-12 bg-green-600 text-white rounded-full flex items-center justify-center hover:bg-green-700 transition-colors">
+                                <span class="text-xl">📘</span>
+                            </a>
+                            <a href="#" class="w-12 h-12 bg-green-600 text-white rounded-full flex items-center justify-center hover:bg-green-700 transition-colors">
+                                <span class="text-xl">🐦</span>
+                            </a>
+                            <a href="#" class="w-12 h-12 bg-green-600 text-white rounded-full flex items-center justify-center hover:bg-green-700 transition-colors">
+                                <span class="text-xl">📷</span>
+                            </a>
+                            <a href="#" class="w-12 h-12 bg-green-600 text-white rounded-full flex items-center justify-center hover:bg-green-700 transition-colors">
+                                <span class="text-xl">💼</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Custom Cursor
+        const cursor = document.getElementById('cursor');
+        const cursorFollower = document.getElementById('cursor-follower');
+
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX - 10 + 'px';
+            cursor.style.top = e.clientY - 10 + 'px';
+            
+            setTimeout(() => {
+                cursorFollower.style.left = e.clientX - 20 + 'px';
+                cursorFollower.style.top = e.clientY - 20 + 'px';
+            }, 100);
+        });
+
+        // Cursor hover effects
+        document.querySelectorAll('a, button, .hover-card, .about-card, .logo-img').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.transform = 'scale(1.5)';
+                cursorFollower.style.transform = 'scale(1.5)';
+                cursorFollower.style.borderColor = 'rgba(5, 150, 105, 0.8)';
+            });
+            
+            el.addEventListener('mouseleave', () => {
+                cursor.style.transform = 'scale(1)';
+                cursorFollower.style.transform = 'scale(1)';
+                cursorFollower.style.borderColor = 'rgba(16, 185, 129, 0.5)';
+            });
+        });
+
+        // Particle Animation
+        function createParticles() {
+            const particles = document.getElementById('particles');
+            const icons = ['🌱', '🍃', '💚', '🌿', '🌾', '🥬', '🥒', '🥑'];
+            
+            for (let i = 0; i < 15; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.textContent = icons[Math.floor(Math.random() * icons.length)];
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 8 + 's';
+                particle.style.animationDuration = (Math.random() * 6 + 6) + 's';
+                particles.appendChild(particle);
+            }
+        }
+
+        // Counter Animation
+        function animateCounter(element, target, duration = 3000) {
+            let start = 0;
+            const increment = target / (duration / 16);
+            
+            function updateCounter() {
+                start += increment;
+                if (start < target) {
+                    element.textContent = Math.floor(start).toLocaleString();
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    element.textContent = target.toLocaleString();
+                }
+            }
+            updateCounter();
+        }
+
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Initialize animations
+        window.addEventListener('load', () => {
+            createParticles();
+            
+            // Start counters after a delay
+            setTimeout(() => {
+                animateCounter(document.getElementById('meals-counter'), 125000);
+                animateCounter(document.getElementById('food-counter'), 850);
+                animateCounter(document.getElementById('co2-counter'), 425);
+            }, 1500);
+
+            // Observe about section elements
+            document.querySelectorAll('.about-card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'all 0.6s ease';
+                observer.observe(card);
+            });
+        });
+
+        // Mobile touch effects
+        if ('ontouchstart' in window) {
+            document.querySelectorAll('.hover-card, .about-card').forEach(card => {
+                card.addEventListener('touchstart', () => {
+                    card.style.transform = 'translateY(-5px) scale(1.02)';
+                });
+                
+                card.addEventListener('touchend', () => {
+                    setTimeout(() => {
+                        card.style.transform = '';
+                    }, 200);
+                });
+            });
+        }
+
+        // Mobile Menu Toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    // Close mobile menu if open
+                    mobileMenu.classList.add('hidden');
+                    
+                    // Smooth scroll to target
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Contact form submission
+        document.getElementById('contact-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(this);
+            const name = this.querySelector('input[type="text"]').value;
+            const email = this.querySelector('input[type="email"]').value;
+            const subject = this.querySelector('select').value;
+            const message = this.querySelector('textarea').value;
+            
+            // Simulate form submission
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            
+            submitBtn.textContent = 'Sending...';
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                alert(`Thank you ${name}! Your message has been sent successfully. We'll get back to you at ${email} soon.`);
+                this.reset();
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }, 2000);
+        });
+
+        // Update impact counters with intersection observer
+        const impactObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && entry.target.id === 'impact') {
+                    animateCounter(document.getElementById('impact-meals'), 250000);
+                    animateCounter(document.getElementById('impact-food'), 1200);
+                    animateCounter(document.getElementById('impact-co2'), 850000);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        // Observe impact section
+        const impactSection = document.getElementById('impact');
+        if (impactSection) {
+            impactObserver.observe(impactSection);
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'972fcfc73244ffc8',t:'MTc1NTgzODg4MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
